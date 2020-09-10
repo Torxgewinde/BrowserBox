@@ -1,0 +1,5 @@
+
+firejail firefox -P default &
+
+sleep 1 && pacmd set-sink-mute 0 0 &
+sleep 2 && pacmd set-sink-volume 0 65530 &
