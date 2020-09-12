@@ -15,7 +15,8 @@ apt update
 apt install -y wireguard
 
 #extract the tarball to the root directory, all extracted files will be owned by root:root
-tar --directory=/ --strip-components=1 --no-same-owner --owner=root --group=root -xzf /tmp/files.tgz
+#directories that already exist will not be overwritten
+tar --directory=/ --strip-components=1 --no-same-owner --owner=root --group=root --no-overwrite-dir --preserve-permissions --extract --gzip --file /tmp/files.tgz
 
 #fix permissions and ownership
 chown -R bbuser:bbuser /home/bbuser
