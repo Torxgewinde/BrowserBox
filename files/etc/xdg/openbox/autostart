@@ -1,5 +1,11 @@
-
-firejail firefox -P default &
-
 sleep 1 && pacmd set-sink-mute 0 0 &
 sleep 2 && pacmd set-sink-volume 0 65530 &
+
+while true; do
+  firejail firefox -P default
+
+  zenity --question --text="Power off?" --title="" --icon-name application-exit --no-wrap --ok-label "yes" --cancel-label "no"
+  if [ $? -eq 0 ]; then
+    /sbin/shutdown -h now
+  fi
+done &
