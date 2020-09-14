@@ -13,3 +13,5 @@ The VM is created automatically, all you need to do is to run:
 
     bash createVM.sh
 
+# Video
+[<img src="https://raw.githubusercontent.com/wiki/Torxgewinde/BrowserBox/images/BrowserBox.gif">](https://raw.githubusercontent.com/wiki/Torxgewinde/BrowserBox/images/BrowserBox.mp4 "Video of script execution")
