@@ -2,7 +2,26 @@
 
 ################################################################################
 #
+# BrowserBox, a Virtualbox-VM with Firefox preinstalled and preconfigured
 # 
+# (c) 2020 Tom Stöveken
+# 
+# License: GPLv3 ff
+#
+# This file downloads ISO images of Debian and Virtualbox-Guest-Additions,
+# unpacks the ISOs, remasters a new ISO that installs and configures
+# the VM unattended.
+# 
+# Firefox is protected and configured with:
+# - Firefox runs inside a VM, so the HOST system is protected
+# - Firejail (limits permissions to essential ones)
+# - important extensions like uBlock, PrivacyBadger, ...
+# - gHacks user.js aka "arkenfox" (improves privacy, reduces telemetry)
+#
+# To start the process run:
+# $ bash createVM.sh
+#
+# Once the VM is created you can use the BrowserBox
 #
 ################################################################################
 
@@ -86,9 +105,35 @@ sed -i 's/menu default//g' "$TMPFOLDER/isolinux/gtk.cfg"
 sed -i 's/label install/label install\n\tmenu default/g' "$TMPFOLDER/isolinux/txt.cfg"
 sed -i 's/append \(.*\)/append preseed\/file=\/cdrom\/preseed.cfg locale=de_DE.UTF-8 keymap=de language=de country=DE \1/g' "$TMPFOLDER/isolinux/txt.cfg"
 
+#copy important files into the ISO
 cp preseed.cfg "$TMPFOLDER/"
 cp postinst.sh "$TMPFOLDER/"
 mkdir -p files/root && cp "$TMPFOLDER2/VBoxLinuxAdditions.run" files/root/
+
+#download arkenfox user.js updater script
+wget -O files/home/bbuser/.mozilla/firefox/bbuser.default/updater.sh https://raw.githubusercontent.com/arkenfox/user.js/master/updater.sh
+
+# download Add-Ons aka Extensions
+msg "downloading extensions"
+# The method used below works for FF-Debian-Buster-Version which happens to be "68.xx" (must be <= 73),
+# however more recent versions (version >= 74) must use "policies" to install extensions unattended
+# (the news: https://blog.mozilla.org/addons/2019/10/31/firefox-to-discontinue-sideloaded-extensions/)
+# (the new way for FF-version >= 74: https://github.com/mozilla/policy-templates/#extensions)
+# (the old way for FF-version <= 73: https://extensionworkshop.com/documentation/publish/distribute-sideloading/#standard-extension-folders)
+# The IDs of the extensions can be found after installing them and then navigating to "about:support" --> table "Add-Ons"
+FF_EXTENSIONS_FOLDER="files/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+mkdir -p "$FF_EXTENSIONS_FOLDER"
+# uBlock
+wget -O "$FF_EXTENSIONS_FOLDER/uBlock0@raymondhill.net.xpi" https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi
+# Privacy Badger
+wget -O "$FF_EXTENSIONS_FOLDER/jid1-MnnxcxisBPnSXQ@jetpack.xpi" https://addons.mozilla.org/firefox/downloads/file/3631723/privacy_badger-latest-an+fx.xpi
+# Decentral Eyes
+wget -O "$FF_EXTENSIONS_FOLDER/jid1-BoFifL9Vbdl2zQ@jetpack.xpi" https://addons.mozilla.org/firefox/downloads/file/3539177/decentraleyes-latest-an+fx.xpi
+# NoScript
+wget -O "$FF_EXTENSIONS_FOLDER/{73a6fe31-595d-460b-a920-fcc0f8843232}.xpi" https://addons.mozilla.org/firefox/downloads/file/3643224/noscript_security_suite-latest-an+fx.xpi
+
+msg "combining files as tarball"
+# make folder "files" a tarball and add it to the new ISOs root folder
 tar -czvf "$TMPFOLDER/files.tgz" files/
 
 #create ISO from folder with CD content
@@ -116,6 +161,7 @@ VBoxManage modifyvm "$MACHINENAME" --nic1 nat
 VBoxManage modifyvm "$MACHINENAME" --cpus 4
 VBoxManage modifyvm "$MACHINENAME" --graphicscontroller vboxsvga
 VBoxManage modifyvm "$MACHINENAME" --audioout on
+VBoxManage modifyvm "$MACHINENAME" --clipboard bidirectional
 
 percent 80
 msg "creating virtual disk"
@@ -149,5 +195,3 @@ VBoxManage guestcontrol "$MACHINENAME" --username "bbuser" --password "%password
 percent 100
 msg "Finished"
 exec 3>&-
-
-
