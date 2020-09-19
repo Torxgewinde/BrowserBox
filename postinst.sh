@@ -1,5 +1,18 @@
 #!/bin/bash
 
+################################################################################
+#
+# BrowserBox, a Virtualbox-VM with Firefox preinstalled and preconfigured
+# 
+# (c) 2020 Tom Stöveken
+# 
+# License: GPLv3 ff
+#
+# This file is run after preseed.cfg largest part is done and target and 
+# cdrom are still mounted. 
+#
+################################################################################
+
 #always exit cleanly, the virtualbox additions needed this quirk or otherwise it signaled an issue
 function cleanup {
 	exit 0
@@ -15,16 +28,10 @@ apt update
 apt install -y wireguard
 
 #extract the tarball to the root directory, all extracted files will be owned by root:root
-#directories that already exist will not be overwritten
-tar --directory=/ --strip-components=1 --no-same-owner --owner=root --group=root --no-overwrite-dir --preserve-permissions --extract --gzip --file /tmp/files.tgz
+tar --directory=/ --strip-components=1 --no-same-owner --owner=root --group=root -xzf /tmp/files.tgz
 
 #fix permissions and ownership
 chown -R bbuser:bbuser /home/bbuser
-
-#install VirtualBox
-#wget -q https://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | apt-key add -
-#echo 'deb https://download.virtualbox.org/virtualbox/debian contrib' > /etc/apt/sources.list.d/virtualbox.list
-#apt-get update
 
 #install VirtualBox Guest Additions
 sh /root/VBoxLinuxAdditions.run
