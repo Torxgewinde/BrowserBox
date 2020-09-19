@@ -1,10 +1,32 @@
+################################################################################
+#
+# BrowserBox, a Virtualbox-VM with Firefox preinstalled and preconfigured
+# 
+# (c) 2020 Tom Stöveken
+# 
+# License: GPLv3 ff
+#
+# This file runs when OpenBox is ready and user is logged in
+#
+################################################################################
+
+# Pulseaudio does not always start unmuted and at full volume, so we ensure this state
+# Volume control happens at the HOST side, not within the GUEST-VM
 sleep 1 && pacmd set-sink-mute 0 0 &
 sleep 2 && pacmd set-sink-volume 0 65530 &
 
+# Update Arkenfox silently
+bash /home/bbuser/.mozilla/firefox/bbuser.default/updater.sh -p /home/bbuser/.mozilla/firefox/bbuser.default/ -u -s -e
+
+# Keep Firefox running or shutdown, so run this loop forever
 while true; do
-  #sleep 3 && xdotool search --onlyvisible --sync --class "Firefox" windowactivate && sleep 0.1 && xdotool search --onlyvisible --sync --class "Firefox" keydown F11 keyup F11 &
+  # Firefox does not have a command line switch for fullscreen, so we simulate keypresses instead. This is not perfect but it works well enough
+  xdotool search --onlyvisible --sync --class "Firefox" windowactivate && sleep 0.5 && xdotool search --onlyvisible --sync --class "Firefox" keydown F11 keyup F11 &
+  
+  # drop many privileges and rights, leaving firefox with the essential permissions limiting attack vectors
   firejail firefox -P default
 
+  # Openbox does not show any objects per default to shutdown the system, so we add a simple dialog
   zenity --question --text="Power off?" --title="" --icon-name application-exit --no-wrap --ok-label "yes" --cancel-label "no"
   if [ $? -eq 0 ]; then
     /sbin/shutdown -h now
