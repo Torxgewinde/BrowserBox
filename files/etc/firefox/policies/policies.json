@@ -1,0 +1,28 @@
+{
+  "policies": {
+    "DisableFeedbackCommands": true,
+    "DisableFirefoxAccounts": true,
+    "DisableFirefoxStudies": true,
+    "DisablePocket": true,
+    "DisableProfileImport": true,
+    "DisableSetDesktopBackground": true,
+    "DisableTelemetry": true,
+    "DisplayBookmarksToolbar": true,
+    "DisplayMenuBar": true,
+    "EnableTrackingProtection": {
+      "Cryptomining": true,
+      "Fingerprinting": true,
+      "Value": true
+    },
+    "FlashPlugin": {
+      "Default": false
+    },
+    "NoDefaultBookmarks": true,
+    "Preferences": {
+      "media.gmp-gmpopenh264.enabled": false,
+      "media.gmp-widevinecdm.enabled": false,
+      "security.ssl.errorReporting.enabled": false
+    },
+    "SearchBar": "separate",
+  }
+}
