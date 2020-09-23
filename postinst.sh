@@ -34,7 +34,4 @@ tar --directory=/ --strip-components=1 --no-same-owner --owner=root --group=root
 #fix permissions and ownership
 chown -R bbuser:bbuser /home/bbuser
 
-#install VirtualBox Guest Additions
-sh /root/VBoxLinuxAdditions.run
-
 exit 0
