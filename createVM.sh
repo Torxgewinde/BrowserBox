@@ -24,7 +24,7 @@
 #
 ################################################################################
 
-ISO="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.5.0-amd64-netinst.iso"
+ISO="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.6.0-amd64-netinst.iso"
 BASEFOLDER="$(pwd)"
 
 ################################################################################
@@ -83,6 +83,10 @@ if [ ! -f "$BASEFOLDER/${ISO##*/}" ]; then
 		percent "$(( PERCENT_START + (DWN*(PERCENT_END-PERCENT_START)/100) ))"
 		msg "downloaded $DWN % of ${ISO##*/}"
 	done
+fi
+if [ ! -f "$BASEFOLDER/${ISO##*/}" ]; then
+	echo "Error: Downloading ISO failed"
+	exit 1
 fi
 percent PERCENT_END
 
