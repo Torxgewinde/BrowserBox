@@ -12,8 +12,6 @@
 #
 ################################################################################
 
-BBUSER_PASSWORD="changeme"
-
 MACHINENAME="BrowserBox-$1"
 RAM_MB=4096 
 HDD_MB=10000
@@ -33,11 +31,6 @@ if [ ! -f "${GUESTISO##*/}" ]; then
 	wget --no-verbose --show-progress "$GUESTISO" || exit 1
 fi
 
-# unpack guest additions ISO
-TMPFOLDER=$(mktemp -d GUESTISO_XXXX) || exit 1
-xorriso -osirrox on -indev "${GUESTISO##*/}" -extract / "$TMPFOLDER" || exit 1
-chmod -R +w "$TMPFOLDER"
-
 ################################################################################
 # prepare Virtualbox VM
 ################################################################################
@@ -55,12 +48,11 @@ VBoxManage createhd --filename "$BASEFOLDER/VirtualBox/$MACHINENAME.vdi" --size 
 VBoxManage storagectl "$MACHINENAME" --name "SATA Controller" --add sata --controller "IntelAhci" --hostiocache on
 VBoxManage storageattach "$MACHINENAME" --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium  "$BASEFOLDER/VirtualBox/$MACHINENAME.vdi"
 
-VBoxManage storageattach "$MACHINENAME" --storagectl "SATA Controller" --port 1 --device 0 --type dvddrive --medium "$ISO"     
+VBoxManage storageattach "$MACHINENAME" --storagectl "SATA Controller" --port 1 --device 0 --type dvddrive --medium "$ISO"
+#VBoxManage storageattach "$MACHINENAME" --storagectl "SATA Controller" --port 2 --device 0 --type dvddrive --medium "${GUESTISO##*/}"     
 VBoxManage modifyvm "$MACHINENAME" --boot1 dvd --boot2 disk --boot3 none --boot4 none
 
 ################################################################################
 # Run Virtualbox VM
 ################################################################################
 VBoxManage startvm "$MACHINENAME" --type gui
-
-rm -rf "$TMPFOLDER"

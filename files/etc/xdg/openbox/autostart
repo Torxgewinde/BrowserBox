@@ -15,6 +15,21 @@
 sleep 1 && pacmd set-sink-mute 0 0 &
 sleep 2 && pacmd set-sink-volume 0 65530 &
 
+#check if VirtualBox Guest Addtions are inserted as a CDROM
+if [ -f /var/autofs/removable/cdrom/VBoxLinuxAdditions.run ]; then
+  zenity --question --text "Guest Additions will be installed now." --title "" --no-wrap --ok-label "ok" --cancel-label "cancel" --timeout 20
+
+  #return value is #0 for OK or #5 for timeout, if it is #1 then cancel
+  if [ $? -ne 1 ]; then
+    zenity --info --title "" --text "installing..." &
+    sudo bash /var/autofs/removable/cdrom/VBoxLinuxAdditions.run 2>&1 >> GuestAdditionsInstalled.log
+    
+    #eject the CDROM now, otherwise this would result in a reboot-loop
+    sudo eject /dev/cdrom
+    sudo /sbin/reboot
+  fi
+fi
+
 # Update Arkenfox silently
 bash /home/bbuser/.mozilla/firefox/bbuser.default/updater.sh -p /home/bbuser/.mozilla/firefox/bbuser.default/ -u -s -e
 

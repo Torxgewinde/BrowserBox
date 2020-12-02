@@ -1,0 +1,1 @@
+bbuser ALL = (root) NOPASSWD: /bin/bash /var/autofs/removable/cdrom/VBoxLinuxAdditions.run,/sbin/reboot,/sbin/shutdown,/usr/bin/eject /dev/cdrom
