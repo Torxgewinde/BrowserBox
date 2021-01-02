@@ -6,7 +6,7 @@ Installs and runs Firefox Browser inside a VM automatically and unattended. One 
  - Based on Debian Buster, OpenBox and LightDM
  - Firefox-ESR
  - Extensions "Decentral Eyes", "Privacy Badger", "uBlock Origin", "NoScript" preinstalled
- - [Arkenfox/gHacks user.js](https://github.com/arkenfox/user.js) preinstalled and customized
+ - [arkenfox/user.js](https://github.com/arkenfox/user.js) preinstalled and customized
  - Wireguard preinstalled
  - Progress is visualized with Zenity
 
