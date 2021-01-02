@@ -24,7 +24,7 @@
 #
 ################################################################################
 
-ISO="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.6.0-amd64-netinst.iso"
+ISO="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.7.0-amd64-netinst.iso"
 BASEFOLDER="$(pwd)"
 
 ################################################################################
@@ -85,7 +85,10 @@ if [ ! -f "$BASEFOLDER/${ISO##*/}" ]; then
 	done
 fi
 if [ ! -f "$BASEFOLDER/${ISO##*/}" ]; then
-	echo "Error: Downloading ISO failed"
+	msg "Error: Downloading ISO failed"
+	percent 99
+	sleep 5
+	percent 100
 	exit 1
 fi
 percent PERCENT_END
@@ -118,6 +121,9 @@ msg "downloading extensions"
 # The IDs of the extensions can be found after installing them and then navigating to "about:support" --> table "Add-Ons"
 FF_EXTENSIONS_FOLDER="$BASEFOLDER/files/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
 mkdir -p "$FF_EXTENSIONS_FOLDER"
+
+#delete all previous (maybe outdated) XPI files in that folder
+find "$FF_EXTENSIONS_FOLDER/" -mindepth 1 -delete
 
 # uBlock
 if [ ! -f "$FF_EXTENSIONS_FOLDER/uBlock0@raymondhill.net.xpi" ]; then
