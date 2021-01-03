@@ -20,7 +20,7 @@ The VM is created automatically, all you need to do is to run:
 Download the most recent ISO-Image from releases and boot from it to start the unattended installation.
 
 # Quick installation in VirtualBox
-Download the most recent OVA-file from releases and double click it. VirtualBox will import the VM. If you would like to have the VirtualBox-Guest-Additions installed, insert the ISO-Image at startup into the virtual CD-ROM drive; it will be detected, automatically installed and trigger a restart to have them active from then on.
+Download the most recent OVA-file from releases and double click it. VirtualBox will import the VM. VirtualBox-Guest-Additions are pre-installed, to update just insert the Guest-Additions-CD-ROM at startup and it will be detected, installed and trigger a restart to apply changes.
 
 # Video
 [<img src="https://raw.githubusercontent.com/wiki/Torxgewinde/BrowserBox/images/BrowserBox.gif">](https://raw.githubusercontent.com/wiki/Torxgewinde/BrowserBox/images/BrowserBox.mp4 "Video of script execution")
