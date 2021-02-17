@@ -1,1 +1,1 @@
-bbuser ALL = (root) NOPASSWD: /bin/bash /var/autofs/removable/cdrom/VBoxLinuxAdditions.run,/sbin/reboot,/sbin/shutdown,/usr/bin/eject /dev/cdrom
+bbuser ALL = (root) NOPASSWD: /bin/bash /var/autofs/removable/cdrom/VBoxLinuxAdditions.run,/sbin/reboot,/sbin/shutdown,/usr/bin/eject /dev/cdrom,/usr/bin/apt install spice-vdagent,/sbin/ip link set,/sbin/dhclient,/usr/sbin/service networking stop,/sbin/getty --timeout 60 -L ttyS0 115200 vt100

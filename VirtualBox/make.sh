@@ -4,11 +4,12 @@
 #
 # BrowserBox, a VM with Firefox preinstalled and preconfigured
 # 
-# (c) 2020 Tom Stöveken
+# (c) 2020,2021 Tom Stöveken
 # 
 # License: GPLv3 ff
 #
-# Create the VitualBox VM
+# Create the VirtualBox VM, this script executes VirtualBox specific commands
+# In the end it generates OVF-packages, e.g. OVA files
 #
 ################################################################################
 
@@ -44,9 +45,9 @@ VBoxManage modifyvm "$MACHINENAME" --graphicscontroller vboxsvga
 VBoxManage modifyvm "$MACHINENAME" --audioout on
 VBoxManage modifyvm "$MACHINENAME" --clipboard bidirectional
 
-#we plan to change the password to this random value and keep a record in the description
-BBUSER_PASSWORD="$(cat /dev/urandom | tr -dc A-Z-a-z-0-9 | head -c10)"
-echo "new password is: $BBUSER_PASSWORD"
+# generate a random password and keep a record in the description
+BBUSER_PASSWORD="$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c10)"
+echo "generated password: $BBUSER_PASSWORD"
 VBoxManage modifyvm "$MACHINENAME" --description "Password for user \"bbuser\" is \"$BBUSER_PASSWORD\""
 
 VBoxManage createhd --filename "$BASEFOLDER/VirtualBox/$MACHINENAME.vdi" --size $(("$HDD_MB")) --format VDI
@@ -84,7 +85,7 @@ VBoxManage storageattach "$MACHINENAME" --storagectl "SATA Controller" --port 1 
 
 #################################################################################
 # Wait till firefox-esr process is active
-# injecting commands into the VM only works if guest additions are working
+# injecting commands into the VM only works if guest additions are running
 #################################################################################
 while true; do
 	VBoxManage guestcontrol "$MACHINENAME" --username "bbuser" --password "%password%" run --exe /bin/bash -- bash -c "pidof firefox-esr > /dev/null" > /dev/null 2>&1
@@ -95,7 +96,7 @@ while true; do
 done
 
 #################################################################################
-# set password
+# set password, power off
 #################################################################################
 #change password inside VM to a random password
 VBoxManage guestcontrol "$MACHINENAME" --username "bbuser" --password "%password%" run --exe /bin/bash -- bash -c "echo -e \"%password%\n$BBUSER_PASSWORD\n$BBUSER_PASSWORD\" | passwd bbuser"

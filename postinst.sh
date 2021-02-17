@@ -2,9 +2,9 @@
 
 ################################################################################
 #
-# BrowserBox, a Virtualbox-VM with Firefox preinstalled and preconfigured
+# BrowserBox, a VM with Firefox preinstalled and preconfigured
 # 
-# (c) 2020 Tom Stöveken
+# (c) 2020,2021 Tom Stöveken
 # 
 # License: GPLv3 ff
 #

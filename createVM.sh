@@ -4,7 +4,7 @@
 #
 # BrowserBox, a VM with Firefox preinstalled and preconfigured
 # 
-# (c) 2020 Tom Stöveken
+# (c) 2020,2021 Tom Stöveken
 # 
 # License: GPLv3 ff
 #
@@ -15,7 +15,7 @@
 # - Firefox runs inside a VM, so the HOST system is protected
 # - Firejail (limits permissions to essential ones)
 # - important extensions like uBlock, PrivacyBadger, ...
-# - gHacks user.js aka "arkenfox" (improves privacy, reduces telemetry)
+# - arkenfox/user.js (improves privacy, reduces telemetry)
 #
 # To start the process run:
 # $ bash createVM.sh
@@ -24,7 +24,7 @@
 #
 ################################################################################
 
-ISO="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.7.0-amd64-netinst.iso"
+ISO="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.8.0-amd64-netinst.iso"
 BASEFOLDER="$(pwd)"
 
 ################################################################################
@@ -35,6 +35,10 @@ REQUIRED_PROGRAMS=(
 "zenity|zenity is missing, please install it with \"sudo apt install zenity\""
 "wget|wget is missing, please install it with \"sudo apt install wget\""
 "xorriso|xorriso is missing, please install with \"sudo apt install xorriso\""
+"VBoxManage|VirtualBox is missing, please install with \"sudo apt install virtualbox virtualbox-guest-additions-iso\""
+"qemu-img|qemu-img is missing, please install with \"sudo apt install qemu-utils\""
+"vmdb2|vmdb2 is missing, please install with \"sudo apt-get install vmdb2\""
+"sudo|sudo is missing, please install with \"apt-get install sudo\""
 )
 SUCCESS="yes"
 for i in "${REQUIRED_PROGRAMS[@]}"; do
@@ -55,6 +59,10 @@ if [ "$SUCCESS" == "no" ]; then
 	exit 1
 fi
 
+# vmdb2 requires root rights, thus we need to use sudo
+# Ask now or otherwise the user is not there to answer the prompt
+PASSWD="$(zenity --password --title="required for vmdb2")" || exit 1
+
 # create a window with a progress bar, get texts through filedescriptor 3
 exec 3> >(zenity --progress --title="Create VM" --percentage=0 --width=800 --no-cancel --auto-close)
 
@@ -66,6 +74,11 @@ function msg {
 function percent {
 	echo "$1" >&3
 }
+
+
+
+# clean any Releases to avoid confusion with previous runs
+rm -rf "$BASEFOLDER/Releases/"
 
 ################################################################################
 # Create modified debian ISO:
@@ -185,6 +198,10 @@ for LANG in "en" "de"; do
 	percent 50
 	msg "creating VirtualBox VM"
 	bash VirtualBox/make.sh "$LANG" "$BASEFOLDER" "$BASEFOLDER/Releases/BrowserBox_$LANG.iso"
+	
+	percent 70
+	msg "creating QEMU VM"
+	bash QEMU/make.sh "$LANG" "$BASEFOLDER" "$TMPFOLDER" "$PASSWD"
 done
 
 rm -rf "$TMPFOLDER"

@@ -10,6 +10,22 @@
 #
 ################################################################################
 
+#enable serial console for one minute after start
+/sbin/getty --timeout 60 -L ttyS0 115200 vt100 &
+
+#if we have no internet-connection, just try DHCP on all interfaces not named "lo"
+#for some settings the networkcard-name does not remain the same
+ping -c2 debian.org > /dev/null
+if [ $? -ne 0 ]; then
+  INTERFACES=$(ip -j -p address | jq '.[] | .ifname' | tr '\n' ' ' | tr -d '"')
+  sudo service networking stop
+  for INTERFACE in $INTERFACES; do
+    if [ $INTERFACE == 'lo' ]; then continue; fi;
+    sudo ip link set $INTERFACE up
+    sudo dhclient -4 --no-pid $INTERFACE
+  done
+fi
+
 # Pulseaudio does not always start unmuted and at full volume, so we ensure this state
 # Volume control happens at the HOST side, not within the GUEST-VM
 sleep 1 && pacmd set-sink-mute 0 0 &
@@ -28,6 +44,25 @@ if [ -f /var/autofs/removable/cdrom/VBoxLinuxAdditions.run ]; then
     sudo eject /dev/cdrom
     sudo /sbin/reboot
   fi
+fi
+
+#check if the graphics card is of type "QXL", if "yes" it makes sense to install spice-vdagent
+lspci | grep "QXL paravirtual graphic card" > /dev/null; if [ $? -eq 0 ]; then
+  dpkg --get-selections | grep spice-vdagent
+  if [ $? -ne 0 ]; then
+    zenity --question --text "Spice-vdagent will be installed now." --title "" --no-wrap --ok-label "ok" --cancel-label "cancel" --timeout 20
+
+    #return value is #0 for OK or #5 for timeout, if it is #1 then cancel
+    if [ $? -ne 1 ]; then
+      zenity --info --title "" --text "installing..." &
+      sudo apt install spice-vdagent
+      sudo /sbin/reboot
+    fi
+  fi
+  
+  # this sets the resolution to the Viewer size, activate the option to resize the guest in the viewer!
+  # xrandr --output Virtual-1 --auto
+  xdotool search --onlyvisible --sync --class "Firefox" && sleep 1 && xrandr -s $(xrandr | head -n3 | tail -n1 | sed -e "s/[^0-9]*\([0-9]*x[0-9]*\).*/\1/g") &
 fi
 
 # Update Arkenfox silently
