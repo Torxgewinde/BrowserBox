@@ -1,0 +1,120 @@
+################################################################################
+#
+# BrowserBox, a VM with Firefox preinstalled and preconfigured
+# 
+# (c) 2020,2021 Tom Stöveken
+# 
+# License: GPLv3 ff
+#
+# This file instructs vmdb2 how to build the debian image
+# Example:
+# sudo vmdb2 <this> --output <image> --verbose --rootfs-tarball <cache>
+#
+################################################################################
+steps:
+  - mkimg: "{{ output }}"
+    size: %hddsize%M
+    
+  - mklabel: msdos
+    device: "{{ output }}"
+    
+  - mkpart: primary
+    device: "{{ output }}"
+    start: 0%
+    end: 100%
+    tag: /
+    
+  - kpartx: "{{ output }}"
+  
+  - mkfs: ext4
+    partition: /
+    
+  - mount: /
+  
+  - unpack-rootfs: /
+  
+  - debootstrap: buster
+    mirror: http://deb.debian.org/debian
+    target: /
+    unless: rootfs_unpacked
+    
+  - apt: install
+    packages:
+    - linux-image-amd64
+    - console-setup
+    - pulseaudio
+    - pavucontrol
+    - sakura
+    - sudo
+    - xserver-xorg-core
+    - xserver-xorg-input-all
+    - x11-xserver-utils
+    - openbox
+    - lightdm
+    - spice-vdagent
+    - curl
+    - pciutils
+
+    tag: /
+    unless: rootfs_unpacked
+    
+  - fstab: /
+    unless: rootfs_unpacked
+    
+  - cache-rootfs: /
+    unless: rootfs_unpacked
+    
+  - grub: bios
+    tag: /
+    
+  - chroot: /
+    shell: |
+      echo BrowserBox > /etc/hostname
+      #uncomment to disable root password
+      #sed -i "s@root:\*:@root::@g" /etc/shadow
+      
+  - create-file: /etc/apt/sources.list
+    contents: |+
+      deb http://deb.debian.org/debian buster main
+      deb-src http://deb.debian.org/debian buster main
+      
+      deb http://deb.debian.org/debian-security/ buster/updates main
+      deb-src http://deb.debian.org/debian-security/ buster/updates main
+      
+      deb http://deb.debian.org/debian buster-updates main
+      deb-src http://deb.debian.org/debian buster-updates main
+
+  - create-file: /etc/network/interfaces.d/lo
+    contents: |+
+      auto lo
+      iface lo inet loopback
+
+  - create-file: /etc/network/interfaces.d/eth0
+    contents: |+
+      auto eth0
+      iface eth0 inet dhcp
+      
+  - create-file: /etc/default/keyboard
+    contents: |+
+      XKBMODEL="pc105"
+      XKBLAYOUT="%lang%"
+      XKBVARIANT="nodeadkeys"
+      XKBOPTIONS=""
+      BACKSPACE="guess"
+      
+  - chroot: /
+    shell: |
+      DEBIAN_FRONTEND=noninteractive apt-get install keyboard-configuration
+      apt-get -y install firejail firetools firejail-profiles firefox-esr firefox-esr-l10n-%lang% htop vim xdotool zenity unzip autofs jq --no-install-recommends --no-install-suggests
+      useradd -m -U --password $(perl -e "print crypt('%password%', 'bbuser_custom_salt')") bbuser
+      usermod -aG sudo bbuser
+      
+  - copy-file: /root/files.tgz
+    src: %tarball%
+
+  - chroot: /
+    shell: |
+      tar --directory=/ --strip-components=1 --no-same-owner --owner=root --group=root --no-overwrite-dir --preserve-permissions --extract --gzip --file /root/files.tgz
+      chown -R bbuser:bbuser /home/bbuser
+      rm -f /root/files.tgz
+      echo -n "" > /etc/motd
