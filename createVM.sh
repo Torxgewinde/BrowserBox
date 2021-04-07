@@ -24,7 +24,7 @@
 #
 ################################################################################
 
-ISO="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.8.0-amd64-netinst.iso"
+ISO="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.9.0-amd64-netinst.iso"
 BASEFOLDER="$(pwd)"
 
 ################################################################################
