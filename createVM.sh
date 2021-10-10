@@ -24,7 +24,7 @@
 #
 ################################################################################
 
-ISO="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.9.0-amd64-netinst.iso"
+ISO="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-11.1.0-amd64-netinst.iso"
 BASEFOLDER="$(pwd)"
 
 ################################################################################
@@ -145,17 +145,17 @@ fi
 
 # Privacy Badger
 if [ ! -f "$FF_EXTENSIONS_FOLDER/jid1-MnnxcxisBPnSXQ@jetpack.xpi" ]; then
-	wget -O "$FF_EXTENSIONS_FOLDER/jid1-MnnxcxisBPnSXQ@jetpack.xpi" https://addons.mozilla.org/firefox/downloads/file/3631723/privacy_badger-latest-an+fx.xpi
+	wget -O "$FF_EXTENSIONS_FOLDER/jid1-MnnxcxisBPnSXQ@jetpack.xpi" https://addons.mozilla.org/firefox/downloads/latest/privacy-badger17/
 fi
 
 # Decentral Eyes
 if [ ! -f "$FF_EXTENSIONS_FOLDER/jid1-BoFifL9Vbdl2zQ@jetpack.xpi" ]; then
-	wget -O "$FF_EXTENSIONS_FOLDER/jid1-BoFifL9Vbdl2zQ@jetpack.xpi" https://addons.mozilla.org/firefox/downloads/file/3539177/decentraleyes-latest-an+fx.xpi
+	wget -O "$FF_EXTENSIONS_FOLDER/jid1-BoFifL9Vbdl2zQ@jetpack.xpi" https://addons.mozilla.org/firefox/downloads/latest/decentraleyes/latest.xpi
 fi
 
 # NoScript
 if [ ! -f "$FF_EXTENSIONS_FOLDER/{73a6fe31-595d-460b-a920-fcc0f8843232}.xpi" ]; then
-	wget -O "$FF_EXTENSIONS_FOLDER/{73a6fe31-595d-460b-a920-fcc0f8843232}.xpi" https://addons.mozilla.org/firefox/downloads/file/3643224/noscript_security_suite-latest-an+fx.xpi
+	wget -O "$FF_EXTENSIONS_FOLDER/{73a6fe31-595d-460b-a920-fcc0f8843232}.xpi" https://addons.mozilla.org/firefox/downloads/latest/noscript/latest.xpi
 fi
 
 #modify syslinux to make it automatically run the text based installer
