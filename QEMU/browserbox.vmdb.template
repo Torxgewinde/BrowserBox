@@ -33,7 +33,7 @@ steps:
   
   - unpack-rootfs: /
   
-  - debootstrap: buster
+  - debootstrap: bullseye
     mirror: http://deb.debian.org/debian
     target: /
     unless: rootfs_unpacked
@@ -75,14 +75,14 @@ steps:
       
   - create-file: /etc/apt/sources.list
     contents: |+
-      deb http://deb.debian.org/debian buster main
-      deb-src http://deb.debian.org/debian buster main
+      deb http://deb.debian.org/debian bullseye main
+      deb-src http://deb.debian.org/debian bullseye main
       
-      deb http://deb.debian.org/debian-security/ buster/updates main
-      deb-src http://deb.debian.org/debian-security/ buster/updates main
+      deb http://deb.debian.org/debian-security/ bullseye/updates main
+      deb-src http://deb.debian.org/debian-security/ bullseye/updates main
       
-      deb http://deb.debian.org/debian buster-updates main
-      deb-src http://deb.debian.org/debian buster-updates main
+      deb http://deb.debian.org/debian bullseye-updates main
+      deb-src http://deb.debian.org/debian bullseye-updates main
 
   - create-file: /etc/network/interfaces.d/lo
     contents: |+
