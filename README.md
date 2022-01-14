@@ -3,7 +3,7 @@ Do you want Firefox preconfigured for privacy and security? Then this is for you
 
 Installs and runs Firefox Browser inside a VM automatically and unattended. One command is sufficient to build the VM.
 
- - Based on Debian Buster, OpenBox and LightDM
+ - Based on Debian, OpenBox and LightDM
  - Firefox-ESR
  - Extensions "Decentral Eyes", "Privacy Badger", "uBlock Origin", "NoScript" preinstalled
  - [arkenfox/user.js](https://github.com/arkenfox/user.js) preinstalled and customized
