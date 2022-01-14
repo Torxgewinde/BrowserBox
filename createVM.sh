@@ -24,7 +24,7 @@
 #
 ################################################################################
 
-ISO="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-11.1.0-amd64-netinst.iso"
+ISO="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-11.2.0-amd64-netinst.iso"
 BASEFOLDER="$(pwd)"
 
 ################################################################################
