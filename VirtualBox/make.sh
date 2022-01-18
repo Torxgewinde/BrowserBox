@@ -98,6 +98,9 @@ done
 #################################################################################
 # set password, power off
 #################################################################################
+#add user to vboxsf group, this is only useful for VirtualBox
+VBoxManage guestcontrol "$MACHINENAME" --username "bbuser" --password "%password%" run --exe /bin/bash -- bash -c "sudo adduser bbuser vboxsf"
+
 #change password inside VM to a random password
 VBoxManage guestcontrol "$MACHINENAME" --username "bbuser" --password "%password%" run --exe /bin/bash -- bash -c "echo -e \"%password%\n$BBUSER_PASSWORD\n$BBUSER_PASSWORD\" | passwd bbuser"
 
