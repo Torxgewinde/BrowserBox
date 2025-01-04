@@ -1,7 +1,7 @@
 # BrowserBox
-Do you want Firefox preconfigured for privacy and security? Then this is for you!
+BrowserBox is a Browser in a virtual machine.
 
-Installs and runs Firefox Browser inside a VM automatically and unattended. One command is sufficient to build the VM.
+Installs and runs Firefox Browser inside a VM automatically and unattended. One command is sufficient to build the VM. Having the browser in a VM, isolates it from the host for security and privacy.
 
  - Based on Debian, OpenBox and LightDM
  - Firefox-ESR
